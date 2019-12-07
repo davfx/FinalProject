@@ -10,14 +10,14 @@ void prinScanResult(int networksFound)
   for (int i = 0; i < networksFound; i++)
   {
     Serial.printf("%d: %s, Ch:%d (%ddBm) %s\n", i + 1, WiFi.SSID(i).c_str(), WiFi.channel(i), WiFi.RSSI(i), WiFi.encryptionType(i) == ENC_TYPE_NONE ? "open" : "");
-    namber = namber + 1;
+    namber = namber + 1;    //this number counts the wifi
   }
   Serial.print(namber);
 }
 
 void setup() {
-  pinMode(4, OUTPUT);
- pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(4, OUTPUT);     
+ pinMode(LED_BUILTIN, OUTPUT); 
 }
 
 void loop() {
@@ -31,20 +31,20 @@ void loop() {
 
   WiFi.scanNetworksAsync(prinScanResult);
 
-  delay(5000);
+  delay(5000);     // this delay is to let the function count the number of wifis, because its not instant
 
   int wifispawer  = namber;    //reading analog voltage and storing it in an integer
-  wifispawer = constrain(wifispawer, 0, 15);
-  wifispawer = map(wifispawer, 0, 15, 0, 255);  /// VALORES PLACA PLACA
-  for (int i = 0; i < namber; i++) {
+  wifispawer = constrain(wifispawer, 0, 15);   // we dont need more than 15
+  wifispawer = map(wifispawer, 0, 15, 0, 255);  
+  for (int i = 0; i < namber; i++) { .  //the led will light for every wifi network
     digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
     delay(200);                       // wait for a second
     digitalWrite(LED_BUILTIN, HIGH);    // turn the LED off by making the voltage LOW
     delay(200);    
 
   }
-  analogWrite(4, wifispawer) ;
-  delay(600000);
-  namber = 0;
+  analogWrite(4, wifispawer) ;    //output
+  delay(600000);    // every 10min scans for wifis.
+  namber = 0;   //reset
 
 }
