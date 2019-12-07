@@ -1,0 +1,50 @@
+#include "ESP8266WiFi.h"
+int namber;
+
+// function that allows us to get data of the avaiable wifi
+
+void prinScanResult(int networksFound)
+{
+  Serial.printf("%d network(s) found\n", networksFound);
+
+  for (int i = 0; i < networksFound; i++)
+  {
+    Serial.printf("%d: %s, Ch:%d (%ddBm) %s\n", i + 1, WiFi.SSID(i).c_str(), WiFi.channel(i), WiFi.RSSI(i), WiFi.encryptionType(i) == ENC_TYPE_NONE ? "open" : "");
+    namber = namber + 1;
+  }
+  Serial.print(namber);
+}
+
+void setup() {
+  pinMode(4, OUTPUT);
+ pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+
+  Serial.begin(115200);
+  Serial.println(namber);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  delay(100);
+
+  WiFi.scanNetworksAsync(prinScanResult);
+
+  delay(5000);
+
+  int wifispawer  = namber;    //reading analog voltage and storing it in an integer
+  wifispawer = constrain(wifispawer, 0, 15);
+  wifispawer = map(wifispawer, 0, 15, 0, 255);  /// VALORES PLACA PLACA
+  for (int i = 0; i < namber; i++) {
+    digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
+    delay(200);                       // wait for a second
+    digitalWrite(LED_BUILTIN, HIGH);    // turn the LED off by making the voltage LOW
+    delay(200);    
+
+  }
+  analogWrite(4, wifispawer) ;
+  delay(600000);
+  namber = 0;
+
+}
